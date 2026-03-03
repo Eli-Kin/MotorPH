@@ -230,7 +230,7 @@ public class Main {
                                     week++;
                                     System.out.println("Week " + week);
                                     System.out.println("Weekly Gross: " + weekGross);
-                                    System.out.println("Weekly Net Salary: " + netGrossSalaryCalculator(weekGross)); //TODO: Store this in a list
+                                    System.out.println("Weekly Net Salary: " + netGrossSalaryCalculator(weekGross));
                                     System.out.println("Hours in the Week: " + secondsToTime(weeklySeconds));
                                     System.out.println("-".repeat(20));
                                     weeklySeconds = 0; //reset weeklyseconds
