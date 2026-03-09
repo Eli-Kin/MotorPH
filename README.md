@@ -1,6 +1,6 @@
 # MotorPH Basic Payroll System
 
-A Java payroll system that calculates **semi-monthly pay** for 34 MotorPH employees using attendance and employee data from CSV files.
+MotorPH Basic Payroll System A Java payroll system that calculates semi-monthly pay for 34 MotorPH employees using attendance and employee data from CSV files.
 
 ---
 
