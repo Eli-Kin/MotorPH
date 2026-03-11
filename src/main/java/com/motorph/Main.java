@@ -15,18 +15,6 @@ public class Main {
     private static List<String> sssContribution = new ArrayList<>();
 
     public static void main(String[] args) {
-
-        System.out.println("-".repeat(100));
-
-        System.out.println("███╗   ███╗ ██████╗ ████████╗ ██████╗ ██████╗ ██████╗ ██╗  ██╗");
-        System.out.println("████╗ ████║██╔═══██╗╚══██╔══╝██╔═══██╗██╔══██╗██╔══██╗██║  ██║");
-        System.out.println("██╔████╔██║██║   ██║   ██║   ██║   ██║██████╔╝██████╔╝███████║");
-        System.out.println("██║╚██╔╝██║██║   ██║   ██║   ██║   ██║██╔══██╗██╔═══╝ ██╔══██║");
-        System.out.println("██║ ╚═╝ ██║╚██████╔╝   ██║   ╚██████╔╝██║  ██║██║     ██║  ██║");
-        System.out.println("╚═╝     ╚═╝ ╚═════╝    ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝  ╚═╝");
-
-        System.out.println("-".repeat(100));
-
         //CSV Files
         String attendanceFile = "src\\data_attendance.csv";
         String infoFile = "src\\data_info.csv";
@@ -48,6 +36,7 @@ public class Main {
         boolean appRunning = true;
         boolean inEmployees = false;
 
+        //Declaring ArrayList for every chosen column
         List<Integer> ids = new ArrayList<>();
         List<String> infos = new ArrayList<>();
         List<String> names = new ArrayList<>();
@@ -148,14 +137,8 @@ public class Main {
             employeesNames.put(ids.get(i), names.get(i));
             employeesBirthdays.put(ids.get(i), birthdays.get(i));
         }
-
-        //display header
-        System.out.printf("%-8s %-25s %-25s", "ID", "Name", "Birthday");
-        System.out.println();
-        //display hashmap employees' data
-        for (Map.Entry<Integer, String> entry : employees.entrySet()) {
-            System.out.printf("%-8d %-20s%n", entry.getKey(), entry.getValue());
-        }
+        //After data has been stored and organised output logo and all employee data in desired format
+        IntroLogo(employees);
 
         do {
             System.out.println("-".repeat(100));
@@ -163,56 +146,81 @@ public class Main {
             System.out.print("Enter Employee's ID: ");
             input = sc.next();
 
-            if (isInteger(input) && employees.containsKey(Integer.parseInt(input))) {
-                int id = Integer.parseInt(input); // convert input to int
-                double HR = Double.parseDouble(employeesHourlyRate.get(id));
-                int week = 0;
-                long totalSeconds = 0;
-                long weeklySeconds = 0;
+            //start of de-nestify project
+            //checks if it's not an integer
+            if(!isInteger(input)){
+                System.out.println("Please input a number.");
+                continue;
+            }
 
-                // get the list for the specific id
-                dateList = date.get(id);
-                inList = in.get(id);
-                outList = out.get(id);
+            //checks if input is a valid id number
+            if(!employees.containsKey(Integer.parseInt(input))){
+                System.out.println("ID not found in employees");
+                continue;
+            }
 
-                for (int i = 0; i < inList.size(); i++) {
-                    //every iteration a new array is created
-                    String[] inParts = inList.get(i).split(":"); //split the list data and store in an array
-                    String[] outParts = outList.get(i).split(":");
 
-                    int inHour = Integer.parseInt(inParts[0]);
-                    int inMinute = Integer.parseInt(inParts[1]);
-                    int outHour = Integer.parseInt(outParts[0]);
-                    int outMinute = Integer.parseInt(outParts[1]);
+            //this should probably be a method to be honest
+            int id = Integer.parseInt(input); // convert input to int
+            double HR = Double.parseDouble(employeesHourlyRate.get(id));
+            int week = 0;
+            long totalSeconds = 0;
+            long weeklySeconds = 0;
 
-                    //sum the seconds every loop
-                    totalSeconds += hourBetweenLog(inHour, inMinute, outHour, outMinute);
-                }
+            // get the list for the specific id
+            dateList = date.get(id);
+            inList = in.get(id);
+            outList = out.get(id);
 
-                if (employees.containsKey(id)) {
-                    String alert = "";
-                    do {
-                        inEmployees = true;
-                        if (employeesNames.containsKey(id) && employeesBirthdays.containsKey(id)) {
-                            System.out.println("-".repeat(100));
-                            System.out.println("ID: " + id);
-                            System.out.println("Name: " + employeesNames.get(id));
-                            System.out.println("Birthday: " + employeesBirthdays.get(id));
-                            System.out.println("Total Hours: " + secondsToTime(totalSeconds));
-                            System.out.println("Total Gross Salary: " + grossSalaryCalculator(totalSeconds, HR));
-                        } else {
-                            System.out.println("ID seems to not match with either the Name or the Birthday.");
-                        }
+            for (int i = 0; i < inList.size(); i++) {
+                //every iteration a new array is created
+                String[] inParts = inList.get(i).split(":"); //split the list data and store in an array
+                String[] outParts = outList.get(i).split(":");
 
+                int inHour = Integer.parseInt(inParts[0]);
+                int inMinute = Integer.parseInt(inParts[1]);
+                int outHour = Integer.parseInt(outParts[0]);
+                int outMinute = Integer.parseInt(outParts[1]);
+
+                //sum the seconds every loop
+                totalSeconds += hourBetweenLog(inHour, inMinute, outHour, outMinute);
+            }
+
+            //could be a method here.
+            if (employees.containsKey(id)) {
+                String alert = "";
+                do {
+                    inEmployees = true;
+                    if (employeesNames.containsKey(id) && employeesBirthdays.containsKey(id)) {
                         System.out.println("-".repeat(100));
-                        System.out.println("Enter g to display gross salary per week.");
-                        System.out.println("Enter a to show attendance.");
-                        System.out.println("Enter e to go back.");
-                        System.out.println(alert);
-                        input = sc.next();
+                        System.out.println("ID: " + id);
+                        System.out.println("Name: " + employeesNames.get(id));
+                        System.out.println("Birthday: " + employeesBirthdays.get(id));
+                        System.out.println("Total Hours: " + secondsToTime(totalSeconds));
+                        System.out.println("Total Gross Salary: " + grossSalaryCalculator(totalSeconds, HR));
+                    } else {
+                        System.out.println("ID seems to not match with either the Name or the Birthday.");
+                    }
 
-                        //if g is inputted
-                        if (Objects.equals(input, "g")) {
+
+
+                    System.out.println("-".repeat(100));
+                    System.out.println("Enter g to display gross salary per week.");
+                    System.out.println("Enter a to show attendance.");
+                    System.out.println("Enter e to go back.");
+                    System.out.println(alert);
+                    //end method
+
+                    input = sc.next().toLowerCase();
+
+                    if(!(input.length() ==1)){
+                        System.out.println("Input too long.");
+                        continue;
+                    }
+
+                    switch(input){
+                        case "g":
+                            System.out.println("worketh");
                             for (int i = 0; i < inList.size(); i++) {
                                 //every iteration a new array is created
                                 String[] inParts = inList.get(i).split(":");
@@ -236,9 +244,8 @@ public class Main {
                                     weeklySeconds = 0; //reset weeklyseconds
                                 }
                             }
-                        }
-                        //if a is inputted
-                        else if (Objects.equals(input, "a")) {
+                            break;
+                        case "a":
                             if (date.containsKey(id)) {
                                 //display header
                                 System.out.printf("%-14s %-9s %-9s", "Date", "In", "Out");
@@ -248,24 +255,19 @@ public class Main {
                                     System.out.println();
                                 }
                             }
-                        } else if (Objects.equals(input, "e")) {
+                            break;
+                        case "e":
                             inEmployees = false;
                             alert = "";
-                        } else {
+                            IntroLogo(employees);
+                            break;
+                        default:
                             alert = "Please input either \"g\", \"a\" or \"e\".";
                             continue;
-                        }
-                    } while (inEmployees == true);
-
-                } else {
-                    System.out.println("ID not found in employees.");
-                }
-            } else if (!employees.containsKey(input) && isInteger(input)) {
-                System.out.println("ID not found in employees");
-            } else {
-                System.out.println("Please only input a number.");
+                    }
+                    //end method
+                } while (inEmployees == true);
             }
-
         } while (appRunning);
     }
 
@@ -383,5 +385,27 @@ public class Main {
 //        System.out.println("totalContribution: " + totalContribution);
 
         return weeklyGross - totalContribution;
+    }
+
+    static void IntroLogo(HashMap<Integer, String> employees){
+        System.out.flush();
+        System.out.println("-".repeat(100));
+
+        System.out.println("███╗   ███╗ ██████╗ ████████╗ ██████╗ ██████╗ ██████╗ ██╗  ██╗");
+        System.out.println("████╗ ████║██╔═══██╗╚══██╔══╝██╔═══██╗██╔══██╗██╔══██╗██║  ██║");
+        System.out.println("██╔████╔██║██║   ██║   ██║   ██║   ██║██████╔╝██████╔╝███████║");
+        System.out.println("██║╚██╔╝██║██║   ██║   ██║   ██║   ██║██╔══██╗██╔═══╝ ██╔══██║");
+        System.out.println("██║ ╚═╝ ██║╚██████╔╝   ██║   ╚██████╔╝██║  ██║██║     ██║  ██║");
+        System.out.println("╚═╝     ╚═╝ ╚═════╝    ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝  ╚═╝");
+
+        System.out.println("-".repeat(100));
+
+        //display header
+        System.out.printf("%-8s %-25s %-25s", "ID", "Name", "Birthday");
+        System.out.println();
+        //display hashmap employees' data
+        for (Map.Entry<Integer, String> entry : employees.entrySet()) {
+            System.out.printf("%-8d %-20s%n", entry.getKey(), entry.getValue());
+        }
     }
 }
