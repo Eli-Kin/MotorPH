@@ -12,11 +12,10 @@ public class Main {
     private static List<String> sssCMaxRange = new ArrayList<>();
     private static List<String> sssContribution = new ArrayList<>();
 
-    //ANSI escape codes for colors
-    public static final String RESET = "\u001B[0m";
-    public static final String RED = "\u001B[31m";
-    public static final String BLUE = "\u001B[34m";
-
+//    //ANSI escape codes for colors
+//    public static final String RESET = "\u001B[0m";
+//    public static final String RED = "\u001B[31m";
+//    public static final String BLUE = "\u001B[34m";
 
     //template for more colours
     //\u001B + [xx, where xx is code.
@@ -35,7 +34,7 @@ public class Main {
 
         //After data has been stored and organised output logo and all employee data and declare and initialize appRunning as true
         boolean appRunning = true;
-        displayIntro(employees);
+//        displayIntro(employees);
         do {
             //Asks for the employee ID
             input = sc.next();
@@ -91,16 +90,16 @@ public class Main {
                         //Display attendance
                         displayAttendance(dateMap, inList, outList, dateList, chosenID);
                         break;
-                    case "e":
-                        //Return to the start of the program
-                        displayIntro(employees);
-                        break loop;
-                    case "t":
-                        //Terminate the program
-                        System.out.println("Terminating program. Thank you for using the MotorPH payroll display system");
-                        displayLogo();
-                        appRunning = false;
-                        break loop;
+//                    case "e":
+//                        //Return to the start of the program
+//                        displayIntro(employees);
+//                        break loop;
+//                    case "t":
+//                        //Terminate the program
+//                        System.out.println("Terminating program. Thank you for using the MotorPH payroll display system");
+//                        displayLogo();
+//                        appRunning = false;
+//                        break loop;
                     default:
                         System.out.println("Please input either \"g\", \"a\", \"e\" or \"t\".");
                         continue;
@@ -234,23 +233,23 @@ public class Main {
         return weeklyGross - totalContribution;
     }
 
-    static void displayIntro(HashMap<Integer, String> employees) throws IOException {
-        //Clear console and display the logo
-        System.out.flush();
-        displayLogo();
-
-        System.out.println("-".repeat(100));
-        //display header
-        System.out.printf("%-8s %-25s %-25s", "ID", "Name", "Birthday");
-        System.out.println();
-        //display hashmap employees' data
-        for (Map.Entry<Integer, String> entry : employees.entrySet()) {
-            System.out.printf("%-8d %-20s%n", entry.getKey(), entry.getValue());
-        }
-
-        System.out.println("-".repeat(100));
-        System.out.print("Enter Employee's ID: ");
-    }
+//    static void displayIntro(HashMap<Integer, String> employees) throws IOException {
+//        //Clear console and display the logo
+//        System.out.flush();
+//        displayLogo();
+//
+//        System.out.println("-".repeat(100));
+//        //display header
+//        System.out.printf("%-8s %-25s %-25s", "ID", "Name", "Birthday");
+//        System.out.println();
+//        //display hashmap employees' data
+//        for (Map.Entry<Integer, String> entry : employees.entrySet()) {
+//            System.out.printf("%-8d %-20s%n", entry.getKey(), entry.getValue());
+//        }
+//
+//        System.out.println("-".repeat(100));
+//        System.out.print("Enter Employee's ID: ");
+//    }
 
     static void displayEmployeeData(HashMap<Integer, String> employeeHourlyRate, HashMap<Integer, String> employeeName, HashMap<Integer, String> employeeBirthdays, HashMap<Integer, List<String>> inMap, HashMap<Integer, List<String>> outMap, int id) throws IOException {
         List<String> inList = inMap.get(id);
@@ -454,18 +453,18 @@ public class Main {
         return sss;
     }
 
-    static void displayLogo(){
-        System.out.println("");
-        System.out.println("-".repeat(100));
-
-        System.out.println("███╗   " + BLUE + "███╗ ██████╗ ████████╗ ██████╗ ██████╗ ██████╗ ██╗  ██╗" + RESET);
-        System.out.println("████╗ ███" + BLUE +"█║██╔═══██╗╚══██╔══╝██╔═══██╗██╔══██╗██╔══██╗██║  ██║"  + RESET);
-        System.out.println("██╔████╔██║█" + BLUE +"█║   ██║   ██║   ██║   ██║██████╔╝██████╔╝███████║"  + RESET);
-        System.out.println("██║╚██╔╝██"+ RED + "║██║   ██║   ██║   ██║   ██║██╔══██╗██╔═══╝ ██╔══██║"  + RESET);
-        System.out.println("██║ ╚═╝ █"+ RED + "█║╚██████╔╝   ██║   ╚██████╔╝██║  ██║██║     ██║  ██║" + RESET);
-        System.out.println("╚═╝     "+ RED + "╚═╝ ╚═════╝    ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝  ╚═╝"  + RESET);
-
-        System.out.println("-".repeat(100));
-
-    }
+//    static void displayLogo(){
+//        System.out.println("");
+//        System.out.println("-".repeat(100));
+//
+//        System.out.println("███╗   " + BLUE + "███╗ ██████╗ ████████╗ ██████╗ ██████╗ ██████╗ ██╗  ██╗" + RESET);
+//        System.out.println("████╗ ███" + BLUE +"█║██╔═══██╗╚══██╔══╝██╔═══██╗██╔══██╗██╔══██╗██║  ██║"  + RESET);
+//        System.out.println("██╔████╔██║█" + BLUE +"█║   ██║   ██║   ██║   ██║██████╔╝██████╔╝███████║"  + RESET);
+//        System.out.println("██║╚██╔╝██"+ RED + "║██║   ██║   ██║   ██║   ██║██╔══██╗██╔═══╝ ██╔══██║"  + RESET);
+//        System.out.println("██║ ╚═╝ █"+ RED + "█║╚██████╔╝   ██║   ╚██████╔╝██║  ██║██║     ██║  ██║" + RESET);
+//        System.out.println("╚═╝     "+ RED + "╚═╝ ╚═════╝    ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝  ╚═╝"  + RESET);
+//
+//        System.out.println("-".repeat(100));
+//
+//    }
 }
