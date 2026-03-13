@@ -13,6 +13,16 @@ public class Main {
     private static List<String> sssContribution = new ArrayList<>();
     private static List<Double> totalNetSalary = new ArrayList<>();
 
+    //ANSI escape codes for colors
+    public static final String RESET = "\u001B[0m";
+    public static final String RED = "\u001B[31m";
+    public static final String BLUE = "\u001B[34m";
+
+    //template for more colours
+    //\u001B + [xx, where xx is code.
+    public static final String TEMPLATE = "\u001B[34m";
+
+
     public static void main(String[] args) throws IOException {
         Scanner sc = new Scanner(System.in);
         String input;
@@ -25,7 +35,7 @@ public class Main {
 
         //After data has been stored and organised output logo and all employee data and declare and initialize appRunning as true
         boolean appRunning = true;
-        displayIntro(employees, employeeName, employeeBirthdays);
+        displayIntro(employees);
         do {
             //Asks for the employee ID
             input = sc.next();
@@ -50,12 +60,14 @@ public class Main {
 
             //Convert input to int and store as chosenID
             int chosenID = Integer.parseInt(input);
-            //Get time in, out and hourly rate of the associated ID
+
+            //Get time in, out, list of dates and hourly rate of the associated ID
             List<String> inList = inMap.get(chosenID);
             List<String> outList = outMap.get(chosenID);
+            List<String> dateList = dateMap.get(chosenID);
             double HR = Double.parseDouble(employeeHourlyRate.get(chosenID));
 
-            //displays employee data tied to the ID
+            //Displays employee data tied to the ID
             displayEmployeeData(employeeHourlyRate, employeeName, employeeBirthdays, inMap, outMap, chosenID);
             displayTotalNetSalary(inList, outList, HR);
 
@@ -70,19 +82,28 @@ public class Main {
                     System.out.println("Input too long.");
                     continue;
                 }
-                //Allowed inputs are g, a, and e.
+                //Allowed inputs are g, a, e and t.
                 switch (input) {
                     case "g":
+                        //Display weekly gross salary
                         displayWeeklyGrossSalary(inList, outList, HR);
                         break;
                     case "a":
-                        displayAttendance(dateMap, inMap, outMap, chosenID);
+                        //Display attendance
+                        displayAttendance(dateMap, inList, outList, dateList, chosenID);
                         break;
                     case "e":
-                        displayIntro(employees, employeeName, employeeBirthdays);
+                        //Return to the start of the program
+                        displayIntro(employees);
+                        break loop;
+                    case "t":
+                        //Terminate the program
+                        System.out.println("Terminating program. Thank you for using the MotorPH payroll display system");
+                        displayLogo();
+                        appRunning = false;
                         break loop;
                     default:
-                        System.out.println("Please input either \"g\", \"a\" or \"e\".");
+                        System.out.println("Please input either \"g\", \"a\", \"e\" or \"t\".");
                         continue;
                 }
             }
@@ -219,20 +240,12 @@ public class Main {
         return weeklyGross - totalContribution;
     }
 
-    static void displayIntro(HashMap<Integer, String> employees, HashMap<Integer, String> employeeeNames, HashMap<Integer, String> employeeBirthdays) throws IOException {
+    static void displayIntro(HashMap<Integer, String> employees) throws IOException {
+        //Clear console and display the logo
         System.out.flush();
-        System.out.println("");
-        System.out.println("-".repeat(100));
-
-        System.out.println("███╗   ███╗ ██████╗ ████████╗ ██████╗ ██████╗ ██████╗ ██╗  ██╗");
-        System.out.println("████╗ ████║██╔═══██╗╚══██╔══╝██╔═══██╗██╔══██╗██╔══██╗██║  ██║");
-        System.out.println("██╔████╔██║██║   ██║   ██║   ██║   ██║██████╔╝██████╔╝███████║");
-        System.out.println("██║╚██╔╝██║██║   ██║   ██║   ██║   ██║██╔══██╗██╔═══╝ ██╔══██║");
-        System.out.println("██║ ╚═╝ ██║╚██████╔╝   ██║   ╚██████╔╝██║  ██║██║     ██║  ██║");
-        System.out.println("╚═╝     ╚═╝ ╚═════╝    ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝  ╚═╝");
+        displayLogo();
 
         System.out.println("-".repeat(100));
-
         //display header
         System.out.printf("%-8s %-25s %-25s", "ID", "Name", "Birthday");
         System.out.println();
@@ -246,7 +259,6 @@ public class Main {
     }
 
     static void displayEmployeeData(HashMap<Integer, String> employeeHourlyRate, HashMap<Integer, String> employeeName, HashMap<Integer, String> employeeBirthdays, HashMap<Integer, List<String>> inMap, HashMap<Integer, List<String>> outMap, int id) throws IOException {
-
         List<String> inList = inMap.get(id);
         List<String> outList = outMap.get(id);
 
@@ -281,7 +293,8 @@ public class Main {
         System.out.println("-".repeat(100));
         System.out.println("Enter g to display gross salary per week.");
         System.out.println("Enter a to show attendance.");
-        System.out.println("Enter e to go back. \n");
+        System.out.println("Enter e to go back.");
+        System.out.println("Enter t to terminate the program.\n");
     }
 
     static void displayWeeklyGrossSalary(List<String> inList, List<String> outList, double HR) throws IOException {
@@ -312,8 +325,8 @@ public class Main {
             }
         }
     }
-
-    static void displayTotalNetSalary(List<String> inList, List<String> outList, double HR) throws IOException {
+  
+   static void displayTotalNetSalary(List<String> inList, List<String> outList, double HR) throws IOException {
         long weeklySeconds = 0;
         double total = 0;
         for (int i = 0; i < inList.size(); i++) {
@@ -343,13 +356,8 @@ public class Main {
         System.out.println("Total Net Salary: " + total);
     }
 
-    static void displayAttendance(HashMap<Integer, List<String>> dateMap, HashMap<Integer, List<String>> inMap, HashMap<Integer, List<String>> outMap,int id) throws IOException {
-        // get the list for the specific id
-        List<String> dateList = dateMap.get(id);
-        List<String> inList = inMap.get(id);
-        List<String> outList = outMap.get(id);
-
-        if (dateMap.containsKey(id)) {
+    static void displayAttendance(HashMap<Integer, List<String>> dateMap, List<String> inList, List<String> outList, List<String> dateList, int chosenID) throws IOException {
+        if (dateMap.containsKey(chosenID)) {
             //display header
             System.out.println("-".repeat(100));
             System.out.printf("%-14s %-9s %-9s", "Date", "In", "Out");
@@ -481,5 +489,20 @@ public class Main {
         sss.put("contribution", contribution);
 
         return sss;
+    }
+
+    static void displayLogo(){
+        System.out.println("");
+        System.out.println("-".repeat(100));
+
+        System.out.println("███╗   " + BLUE + "███╗ ██████╗ ████████╗ ██████╗ ██████╗ ██████╗ ██╗  ██╗" + RESET);
+        System.out.println("████╗ ███" + BLUE +"█║██╔═══██╗╚══██╔══╝██╔═══██╗██╔══██╗██╔══██╗██║  ██║"  + RESET);
+        System.out.println("██╔████╔██║█" + BLUE +"█║   ██║   ██║   ██║   ██║██████╔╝██████╔╝███████║"  + RESET);
+        System.out.println("██║╚██╔╝██"+ RED + "║██║   ██║   ██║   ██║   ██║██╔══██╗██╔═══╝ ██╔══██║"  + RESET);
+        System.out.println("██║ ╚═╝ █"+ RED + "█║╚██████╔╝   ██║   ╚██████╔╝██║  ██║██║     ██║  ██║" + RESET);
+        System.out.println("╚═╝     "+ RED + "╚═╝ ╚═════╝    ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝  ╚═╝"  + RESET);
+
+        System.out.println("-".repeat(100));
+
     }
 }
